@@ -17,7 +17,7 @@
 
 /* Encabezado del formulario */
 .header-container {
-    background-image: url('./assets/img/portadaG&G.jpg');
+    background-image: url('../assets/img/mexibusLogo.png');
     background-size: cover;
     background-position: center;
     height: 150px;
