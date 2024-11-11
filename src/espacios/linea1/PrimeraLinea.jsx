@@ -6,18 +6,22 @@ import { Column } from 'primereact/column';
 const PrimeraLinea = () => {
 
   const [lstEspacios, setLstEspacios] = useState([]);
-  const primeraLineaService = PrimeraLineaService();
+  const primeraLineaService = new PrimeraLineaService();
 
+  useEffect(() => {
+    primeraLineaService.obtenerLstEspacio().then((data) => {
+      setLstEspacios(data);
+    })
+  }, []);
 
   return (
     <div className='card'>
-      <DataTable value={lstEspacios}>
+      <DataTable value={lstEspacios} emptyMessage="No hay espacios">
         <Column field="id" header="Id" />
         <Column field="dimensiones" header="dimensiones" />
         <Column field="precio" header="precio" />
         <Column field="estado" header="estado" />
       </DataTable>
-
     </div>
   );
 };

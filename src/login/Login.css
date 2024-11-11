@@ -1,4 +1,13 @@
 /* Contenedor principal del formulario */
+.container{
+    display: flex;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    height: 35rem;
+}
 .container-form {
     width: 350px;
     height: 500px;
@@ -57,6 +66,7 @@
     font-size: 16px;
     border: none;
     border-radius: 5px;
+    border: #b90000 1.5px solid;
     cursor: pointer;
     transition: background-color 0.3s ease;
     display: flex;
@@ -65,5 +75,6 @@
 
 /* Cambio de color al pasar el cursor sobre el botón */
 .button-submit:hover {
-    background-color: #b35f00;
+    background-color: #ffffff;
+    color: #333;
 }

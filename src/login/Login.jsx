@@ -21,7 +21,7 @@ export const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:8080/auth/login', {
+            const response = await fetch('http://localhost:8080/mexibus/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,8 +31,8 @@ export const Login = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem('token', data.token);  // Guarda el token JWT en localStorage
-                navigate('/primeraLinea');  // Redirige a una ruta protegida
+                localStorage.setItem('token', data.token);
+                navigate('/pLinea');
             } else {
                 toast.current.show({ severity: 'warn', summary: 'Error', detail: 'Usuario o Contraseña Incorrecto' });
             }
@@ -55,6 +55,7 @@ export const Login = () => {
 
     return (
         <>
+        <div className="container">
             <div className="container-form">
                 <h1>Iniciar Sesión</h1>
                 <div className="header-container">
@@ -91,6 +92,7 @@ export const Login = () => {
                         className="button-submit">
                     </Button>
                 </form>
+            </div>
             </div>
         </>
     );

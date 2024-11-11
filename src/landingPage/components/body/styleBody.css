@@ -1,0 +1,36 @@
+.container-body{
+    text-align: center;
+}
+.container-cards{
+    display: flex;
+    gap: 10px;
+    text-align: center;
+    justify-content: center;
+}
+.card-linea1{
+    width: 250px;
+    height: 300px;
+    background-color: rgb(0, 223, 71);
+    border-radius: 10px;
+    
+}
+.card-linea2{
+    width: 250px;
+    height: 300px;
+    background-color: rgb(205, 19, 19);
+    border-radius: 10px;
+}
+.card-linea3{
+    width: 250px;
+    height: 300px;
+    background-color: rgb(164, 164, 164);
+    border-radius: 10px;
+
+}
+.card-linea4{
+    width: 250px;
+    height: 300px;
+    background-color: rgb(228, 210, 8);
+    border-radius: 10px;
+
+}

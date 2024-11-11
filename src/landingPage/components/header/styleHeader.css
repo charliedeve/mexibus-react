@@ -1,0 +1,50 @@
+body{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.header{
+  background-color: rgb(174, 172, 0);
+  display: flex;
+  justify-content: space-between;
+  top: 0;
+  z-index: 1000;
+  position: sticky;
+  padding: 1em 2em;
+}
+.logo{
+  height: 100px;
+  width: 200px;
+  background-image: url("../../../assets/img/mexibusBird.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  }
+nav{
+  display: flex;
+  gap: 20px;
+  padding-top: 30px;
+  font-weight: 600;
+  font-size: 18px;
+}
+nav a{
+  color: aliceblue;
+  text-decoration: none;
+}
+nav a:hover{
+  color: brown;
+}
+.btnSignin{
+  width: 105px;
+  height: 30px;
+  border: 1px brown solid;
+  border-radius: 10px;
+  background-color: white;
+  font-weight: bold;
+  box-sizing: border-box;
+}
+.btnSignin:hover{
+  background-color: brown;
+  cursor: pointer;
+  color: aliceblue;
+}
