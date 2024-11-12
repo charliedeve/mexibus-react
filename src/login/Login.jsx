@@ -32,7 +32,7 @@ export const Login = () => {
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('token', data.token);
-                navigate('/pLinea');
+                navigate('/main');
             } else {
                 toast.current.show({ severity: 'warn', summary: 'Error', detail: 'Usuario o Contraseña Incorrecto' });
             }

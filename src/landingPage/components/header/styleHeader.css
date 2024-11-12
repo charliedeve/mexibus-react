@@ -4,7 +4,7 @@ body{
   box-sizing: border-box;
 }
 .header{
-  background-color: rgb(174, 172, 0);
+  background-color: #CBD7CB;
   display: flex;
   justify-content: space-between;
   top: 0;
@@ -15,7 +15,7 @@ body{
 .logo{
   height: 100px;
   width: 200px;
-  background-image: url("../../../assets/img/mexibusBird.png");
+  background-image: url("../../../assets/img/logoMexi.jpg");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -39,12 +39,15 @@ nav a:hover{
   height: 30px;
   border: 1px brown solid;
   border-radius: 10px;
-  background-color: white;
+  background-color: #88141A;
   font-weight: bold;
   box-sizing: border-box;
+  color: white;
+  transition: 0.2s;
 }
 .btnSignin:hover{
-  background-color: brown;
+  background-color: rgb(255, 255, 255);
   cursor: pointer;
-  color: aliceblue;
+  color: rgb(0, 0, 0);
+  transition: 0.2s;
 }

@@ -12,7 +12,7 @@ export const Header = () => {
 
   return (
     <header className='header'>
-      <div className='logo'></div>
+      <div onClick={()=>{alert("Hola")}} className='logo'></div>
       <nav>
         <button
         onClick={signInBtn} 

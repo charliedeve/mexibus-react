@@ -1,0 +1,39 @@
+.hero {
+    background-image: url('../../../assets/img/bg-mexi.jpg'); /* Agrega tu imagen de fondo */
+    background-size: cover;
+    background-position: center;
+    color: white;
+    height: 80vh;
+    display: flex;
+    text-align: center;
+  }
+  
+  .hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    align-items: center;
+    text-align: center;
+  }
+  .hero-quare{
+    width: 550px;
+    height: 80vh;
+    display: grid;
+    background-color: #88141A;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: sticky;
+  }
+  .cta-button {
+    background-color: #ff6347;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .separador{
+    border: #88141A 2px solid;
+    width: 50%;
+  }
