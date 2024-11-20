@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import PrimeraLinea from '../espacios/linea1/PrimeraLinea';
 import Login from '../login/Login';
 import { LandingPage } from '../landingPage/LandingPage';
-import { MainEspacios } from '../espacios/mainEspacios/MainEspacios';
+import { CrudEspacios } from '../espacios/mainEspacios/CrudEspacios';
 import { LandingPLinea } from '../landingPage/primeraLinea/LandingPLinea';
+import CrudPLinea from '../espacios/linea1/CrudPLinea';
 
 const AppRouter = () => {
   return (
@@ -12,8 +12,8 @@ const AppRouter = () => {
         <Route index element={<LandingPage />} />
         <Route path='/landingPLinea' element={<LandingPLinea/>}/>
         <Route path='/login' element={<Login/>}/>
-        <Route path='/main' element={<MainEspacios/>}/>
-        <Route path="/pLinea" element={<PrimeraLinea />} />
+        <Route path='/main' element={<CrudEspacios/>}/>
+        <Route path="/pLinea" element={<CrudPLinea />} />
       </Routes>
     </Router>
   );

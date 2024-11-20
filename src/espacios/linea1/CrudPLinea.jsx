@@ -3,7 +3,7 @@ import PrimeraLineaService from '../../service/PrimeraLineaService';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 
-const PrimeraLinea = () => {
+const CrudPLinea = () => {
 
   const [lstEspacios, setLstEspacios] = useState([]);
   const primeraLineaService = new PrimeraLineaService();
@@ -26,4 +26,4 @@ const PrimeraLinea = () => {
   );
 };
 
-export default PrimeraLinea;
+export default CrudPLinea;
