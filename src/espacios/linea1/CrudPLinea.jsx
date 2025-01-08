@@ -8,6 +8,8 @@ import { Button } from 'primereact/button';
 import { FloatLabel } from 'primereact/floatlabel';
 import { Dropdown } from 'primereact/dropdown';
 import { Dialog } from 'primereact/dialog';
+import { Toast } from 'primereact/toast';
+
 
 const CrudPLinea = () => {
 
@@ -16,6 +18,16 @@ const CrudPLinea = () => {
   const [lstEspacios, setLstEspacios] = useState([]);
   const [expandedRows, setExpandedRows] = useState(null);
   const [dlgAgregaEspacio, setDlgAgregaEspacio] = useState(false);
+  const [dlgAgregaEstacion, setDlgAgregaEstacion] = useState(false);
+  const [nombreAgregaEstacion, setNombreAgregaEstacion] = useState(null);
+  const [agregaEspacioValues, setAgregaEspacioValues] = useState({
+    'nombre': '',
+    'dimensiones': '',
+    'precio': null,
+    'estado': '',
+    'estacion': {'idEstacion': null}
+  });
+  const toast = useRef(null);
 
   const buscarEstacion = (e) => {
     if (e.keyCode === 13) {
@@ -30,11 +42,10 @@ const CrudPLinea = () => {
   }
 
   const agregaEspacio = () => {
-
   }
 
   const onRowExpand = (e) => {
-    crudPLineaService.seleccionaEstacion(e.data.idEstacion).then((data) => {
+    crudPLineaService.seleccionarEstacion(e.data.idEstacion).then((data) => {
       setLstEspacios(data.espacios);
     })
   }
@@ -85,12 +96,6 @@ const CrudPLinea = () => {
       <div className='grid'>
         <div className='col'>
           <Button
-            icon="pi pi-plus"
-            onClick={() =>{setDlgAgregaEspacio(true)}}
-          />
-        </div>
-        <div className='col'>
-          <Button
             icon="pi pi-pencil"
           />
         </div>
@@ -101,6 +106,57 @@ const CrudPLinea = () => {
         </div>
       </div>
     )
+  }
+
+  const footerAgregaEstacion = () => {
+    return (
+      <div>
+        <Button
+          label='Agregar'
+          icon="pi pi-check"
+          onClick={agregarEstacion}
+        />
+      </div>
+    )
+  }
+
+  const footerAgregaEspacio = (rowData) => {
+    return(
+      <div>
+        <Button
+          label='Agregar'
+          icon="pi pi-check"
+          onClick={agregarEspacio(rowData)}
+        />
+      </div>
+    )
+  }
+
+  const nombrarEstacion = (e) => {
+    setNombreAgregaEstacion(e.target.value)
+  }
+
+  const agregarEstacion = () => {
+    if (nombreAgregaEstacion == null || nombreAgregaEstacion == '') {
+      toast.current.show({ severity: 'warn', summary: 'No se pudo agregar la estación', detail: 'El nombre de la estación no puede estar vacío' });
+    } else {
+      try {
+        let nuevaEstacion = {
+          'nombre': nombreAgregaEstacion,
+          'lineaPadre': 1
+        }
+        crudPLineaService.agregarEstacion(nuevaEstacion).then((response) => {
+          if (response) {
+            toast.current.show({ severity: 'success', summary: 'Estación agregada', detail: 'Se ha agregado la estación con éxito', life: 3000 });
+          }
+        });
+      } catch (error) { }
+      setDlgAgregaEstacion(false)
+    }
+  }
+
+  const agregarEspacio = (rowData) => {
+    console.log(rowData)
   }
 
   return (
@@ -114,14 +170,13 @@ const CrudPLinea = () => {
           <Dropdown />
         </div>
         <div className='p-inputgroup justify-content-end mb-5'>
-          <Button icon="pi pi-search" />
           <FloatLabel>
             <InputText
               id='buscaEstacion'
               onKeyDown={(e) => buscarEstacion(e)} />
             <label htmlFor="buscaEstacion">Buscar estación</label>
           </FloatLabel>
-          <Button />
+          <Button icon="pi pi-plus-circle" onClick={() => { setDlgAgregaEstacion(true) }} />
         </div>
         <div className='card'>
           <DataTable
@@ -137,16 +192,81 @@ const CrudPLinea = () => {
             <Column expander={true} />
             <Column field="idEstacion" header="Id" />
             <Column field="nombre" header="nombre" />
+            <Column
+              header="Acciones"
+              body={<Button
+                icon="pi pi-plus"
+                onClick={() => { setDlgAgregaEspacio(true) }}
+                tooltip='Agregar espacio' />} />
           </DataTable>
         </div>
       </div>
       <Dialog
-      visible={dlgAgregaEspacio}
-      modal
-      header={"Agrega espacio"}
-      style={{width: '50rem'}}
-      onHide={() =>{ setDlgAgregaEspacio(false)}}
+        visible={dlgAgregaEspacio}
+        modal
+        header="Agregar espacio"
+        style={{ width: '50rem' }}
+        onHide={() => { setDlgAgregaEspacio(false) }}
+        footer={footerAgregaEspacio}
       >
+        <div className='grid pt-4'>
+        <div className='pt-4 col-6'>
+          <FloatLabel>
+            <InputText
+            id='nombreEspacio'
+            onChange={(e) => {setAgregaEspacioValues({...agregaEspacioValues, nombre: e.target.value})}}
+            />
+            <label htmlFor="nombreEspacio">Nombre espacio</label>
+            </FloatLabel>
+            </div>
+            <div className='pt-4 col-6'>
+            <FloatLabel>
+            <InputText
+            id='dimensiones'
+            onChange={(e) => {setAgregaEspacioValues({...agregaEspacioValues, dimensiones: e.target.value})}}
+            />
+            <label htmlFor="dimensiones">Dimensiones</label>
+            </FloatLabel>
+            </div>
+            <div className='pt-4 col-6'>
+            <FloatLabel>
+            <InputText
+            id='precio'
+            onChange={(e) => {setAgregaEspacioValues({...agregaEspacioValues, precio: e.target.value})}}
+            keyfilter='int'
+            />
+            <label htmlFor="precio">Precio</label>
+            </FloatLabel>
+            </div>
+            <div className='pt-4 col-6'>
+            <FloatLabel>
+            <InputText
+            id='estado'
+            onChange={(e) => {setAgregaEspacioValues({...agregaEspacioValues, estado: e.target.value})}}
+            />
+            <label htmlFor="estado">Estado</label>
+            </FloatLabel>
+            </div>
+        </div>
+      </Dialog>
+      <Toast ref={toast} />
+      <Dialog
+        visible={dlgAgregaEstacion}
+        modal
+        header="Agregar estación"
+        style={{ width: '50rem' }}
+        footer={(footerAgregaEstacion)}
+        onHide={() => { setDlgAgregaEstacion(false) }}
+      >
+        <div className='pt-4 p-inputgroup justify-content-end mb-5'>
+          <FloatLabel>
+            <InputText
+              id='agregaEstacion'
+              onChange={(e) => { nombrarEstacion(e) }}
+            />
+            <label htmlFor='agregaEstacion'>Nombre estación</label>
+          </FloatLabel>
+        </div>
       </Dialog>
     </div>
   );
