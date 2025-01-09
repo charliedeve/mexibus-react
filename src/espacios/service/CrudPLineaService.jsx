@@ -20,4 +20,10 @@ export default class CrudPLineaService {
         return axios.post(baseUrl, nuevaEstacion, {headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`, 'Content-type': 'application/json'}})
         .then(response => response.data);
     }
+
+    agregarEspacio(nuevoEspacio){
+        let baseUrl = 'http://localhost:8080/mexibus/espacio/agregarEspacio';
+        return axios.post(baseUrl, nuevoEspacio, {headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`, 'Content-type': 'application/json'}})
+        .then(response => response.data);
+    }
 }

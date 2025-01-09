@@ -20,6 +20,7 @@ const CrudPLinea = () => {
   const [dlgAgregaEspacio, setDlgAgregaEspacio] = useState(false);
   const [dlgAgregaEstacion, setDlgAgregaEstacion] = useState(false);
   const [nombreAgregaEstacion, setNombreAgregaEstacion] = useState(null);
+  const [espacioData, setEspacioData] = useState(null);
   const [agregaEspacioValues, setAgregaEspacioValues] = useState({
     'nombre': '',
     'dimensiones': '',
@@ -27,6 +28,13 @@ const CrudPLinea = () => {
     'estado': '',
     'estacion': {'idEstacion': null}
   });
+  const [dimension, setDimension] = useState(null);
+  const dimensionesOptions = [
+    { size: '1x1', code: '1x1'},
+    { size: '2x2', code: '2x2'},
+    { size: '3x3', code: '3x3'},
+    { size: '4x4', code: '4x4'},
+  ]
   const toast = useRef(null);
 
   const buscarEstacion = (e) => {
@@ -41,7 +49,22 @@ const CrudPLinea = () => {
     })
   }
 
-  const agregaEspacio = () => {
+  const agregarEspacio = () => {
+    let nuevoEspacio = {
+      'nombre': agregaEspacioValues.nombre,
+      'dimensiones': agregaEspacioValues.dimensiones.size,
+      'precio': agregaEspacioValues.precio,
+      'estado': agregaEspacioValues.estado,
+      'estacion': {'idEstacion': espacioData.idEstacion}
+    }
+    if(nuevoEspacio.nombre == '' || nuevoEspacio.precio == null || nuevoEspacio.estado == ''){
+      toast.current.show({ severity: 'warn', summary: 'Error', detail: 'No puedes dejar un campo vacío', life: 3000 });
+    }else{
+    crudPLineaService.agregarEspacio(nuevoEspacio).then(() => {
+      setDlgAgregaEspacio(false)
+      toast.current.show({ severity: 'success', summary: 'Espacio agregado', detail: 'Se ha agregado el espacio con éxito', life: 3000 });
+    })
+  }
   }
 
   const onRowExpand = (e) => {
@@ -126,7 +149,7 @@ const CrudPLinea = () => {
         <Button
           label='Agregar'
           icon="pi pi-check"
-          onClick={agregarEspacio(rowData)}
+          onClick={() => {agregarEspacio(rowData)}}
         />
       </div>
     )
@@ -155,8 +178,26 @@ const CrudPLinea = () => {
     }
   }
 
-  const agregarEspacio = (rowData) => {
-    console.log(rowData)
+  const iniciarAgregaEspacio = (rowData) => {
+    setDlgAgregaEspacio(true);
+    setEspacioData(rowData)
+  }
+
+  const agregarEspacioTemplate = (rowData) => {
+    return (
+      <div>
+        <Button
+        icon="pi pi-plus"
+        onClick={() => {iniciarAgregaEspacio(rowData)}}
+        tooltip='Agregar espacio' />
+      </div>
+    )
+  }
+
+  const colocarDimension = (e) => {
+    setDimension(e.target.value)
+    setAgregaEspacioValues({...agregaEspacioValues, dimensiones: e.target.value})
+    console.log(agregaEspacioValues.dimensiones.size)
   }
 
   return (
@@ -194,10 +235,7 @@ const CrudPLinea = () => {
             <Column field="nombre" header="nombre" />
             <Column
               header="Acciones"
-              body={<Button
-                icon="pi pi-plus"
-                onClick={() => { setDlgAgregaEspacio(true) }}
-                tooltip='Agregar espacio' />} />
+              body={agregarEspacioTemplate} />
           </DataTable>
         </div>
       </div>
@@ -214,19 +252,19 @@ const CrudPLinea = () => {
           <FloatLabel>
             <InputText
             id='nombreEspacio'
-            onChange={(e) => {setAgregaEspacioValues({...agregaEspacioValues, nombre: e.target.value})}}
+            onChange={(e) => {setAgregaEspacioValues({agregaEspacioValues, nombre: e.target.value})}}
             />
             <label htmlFor="nombreEspacio">Nombre espacio</label>
             </FloatLabel>
             </div>
             <div className='pt-4 col-6'>
-            <FloatLabel>
-            <InputText
-            id='dimensiones'
-            onChange={(e) => {setAgregaEspacioValues({...agregaEspacioValues, dimensiones: e.target.value})}}
-            />
-            <label htmlFor="dimensiones">Dimensiones</label>
-            </FloatLabel>
+            <Dropdown 
+            value={dimension} 
+            onChange={(e) => {colocarDimension(e)}} 
+            options={dimensionesOptions} 
+            optionLabel="size" 
+            placeholder="Selecciona un tamaño" 
+            className="w-full md:w-15rem" />
             </div>
             <div className='pt-4 col-6'>
             <FloatLabel>
