@@ -21,19 +21,23 @@ const CrudPLinea = () => {
   const [dlgAgregaEstacion, setDlgAgregaEstacion] = useState(false);
   const [nombreAgregaEstacion, setNombreAgregaEstacion] = useState(null);
   const [espacioData, setEspacioData] = useState(null);
+  const [dlgEditarEspacio, setDlgEditarEspacio] = useState(false);
+  const [editEspacioData, setEditEspacioData] = useState(null);
+  const [dlgEliminarEspacio, setDlgEliminarEspacio] = useState(false);
+  const [deleteEspacioData, setDeleteEspacioData] = useState(null);
   const [agregaEspacioValues, setAgregaEspacioValues] = useState({
     'nombre': '',
     'dimensiones': '',
     'precio': null,
     'estado': '',
-    'estacion': {'idEstacion': null}
+    'estacion': { 'idEstacion': null }
   });
   const [dimension, setDimension] = useState(null);
   const dimensionesOptions = [
-    { size: '1x1', code: '1x1'},
-    { size: '2x2', code: '2x2'},
-    { size: '3x3', code: '3x3'},
-    { size: '4x4', code: '4x4'},
+    { size: '1x1', code: '1x1' },
+    { size: '2x2', code: '2x2' },
+    { size: '3x3', code: '3x3' },
+    { size: '4x4', code: '4x4' },
   ]
   const toast = useRef(null);
 
@@ -55,16 +59,16 @@ const CrudPLinea = () => {
       'dimensiones': agregaEspacioValues.dimensiones.size,
       'precio': agregaEspacioValues.precio,
       'estado': agregaEspacioValues.estado,
-      'estacion': {'idEstacion': espacioData.idEstacion}
+      'estacion': { 'idEstacion': espacioData.idEstacion }
     }
-    if(nuevoEspacio.nombre == '' || nuevoEspacio.precio == null || nuevoEspacio.estado == ''){
+    if (nuevoEspacio.nombre == '' || nuevoEspacio.precio == null || nuevoEspacio.estado == '') {
       toast.current.show({ severity: 'warn', summary: 'Error', detail: 'No puedes dejar un campo vacío', life: 3000 });
-    }else{
-    crudPLineaService.agregarEspacio(nuevoEspacio).then(() => {
-      setDlgAgregaEspacio(false)
-      toast.current.show({ severity: 'success', summary: 'Espacio agregado', detail: 'Se ha agregado el espacio con éxito', life: 3000 });
-    })
-  }
+    } else {
+      crudPLineaService.agregarEspacio(nuevoEspacio).then(() => {
+        setDlgAgregaEspacio(false)
+        toast.current.show({ severity: 'success', summary: 'Espacio agregado', detail: 'Se ha agregado el espacio con éxito', life: 3000 });
+      })
+    }
   }
 
   const onRowExpand = (e) => {
@@ -106,7 +110,7 @@ const CrudPLinea = () => {
             header="Estado"
           />
           <Column
-            body={actionTemplate}
+            body={editDeleteTemplate}
             header="Acciones"
           />
         </DataTable>
@@ -114,17 +118,24 @@ const CrudPLinea = () => {
     )
   }
 
-  const actionTemplate = () => {
+  const iniciaEditarEspacio = (rowData) => {
+    setDlgEditarEspacio(true)
+    setEditEspacioData(rowData)
+  }
+
+  const editDeleteTemplate = (rowData) => {
     return (
       <div className='grid'>
         <div className='col'>
           <Button
             icon="pi pi-pencil"
+            onClick={() => { iniciaEditarEspacio(rowData) }}
           />
         </div>
         <div className='col'>
           <Button
             icon="pi pi-trash"
+            onClick={() => { iniciaEliminarEspacio(rowData) }}
           />
         </div>
       </div>
@@ -144,15 +155,79 @@ const CrudPLinea = () => {
   }
 
   const footerAgregaEspacio = (rowData) => {
-    return(
+    return (
       <div>
         <Button
           label='Agregar'
           icon="pi pi-check"
-          onClick={() => {agregarEspacio(rowData)}}
+          onClick={() => { agregarEspacio(rowData) }}
         />
       </div>
     )
+  }
+
+  const footerActualizarEspacio = () => {
+    return (
+      <div>
+        <Button
+          label='Actualizar'
+          icon="pi pi-pencil"
+          onClick={actualizarEspacio}
+        />
+      </div>
+    )
+  }
+
+  const iniciaEliminarEspacio = (rowData) => {
+    setDlgEliminarEspacio(true)
+    setDeleteEspacioData(rowData)
+  }
+
+  const eliminarEspacio = () => {
+    crudPLineaService.eliminarEspacio(deleteEspacioData.idEspacio).then(() => {
+      setDlgEliminarEspacio(false)
+      toast.current.show({ severity: 'success', summary: 'Espacio eliminado', detail: 'Se ha eliminado el espacio con éxito', life: 3000 });
+    })
+  }
+
+  const footerEliminarEspacio = () => {
+    return (
+      <div className='grid'>
+        <div className='col-1'>
+          <Button
+            label='Cancelar'
+            icon="pi pi-times"
+            severity='secondary'
+            onClick={() => { setDlgEliminarEspacio(false) }}
+          />
+        </div>
+        <div className='col'>
+          <Button
+            label='Eliminar'
+            icon="pi pi-trash"
+            severity='danger'
+            onClick={() => { eliminarEspacio() }}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  const actualizarEspacio = () => {
+    let espacioActualizado = {
+      'nombre': agregaEspacioValues.nombre,
+      'dimensiones': agregaEspacioValues.dimensiones.size,
+      'precio': parseInt(agregaEspacioValues.precio),
+      'estado': agregaEspacioValues.estado,
+    }
+    if (espacioActualizado.nombre == '' || espacioActualizado.precio == null || espacioActualizado.estado == '') {
+      toast.current.show({ severity: 'warn', summary: 'Error', detail: 'No puedes dejar un campo vacío', life: 3000 });
+    } else {
+      crudPLineaService.actualizarEspacio(editEspacioData.idEspacio, espacioActualizado).then(() => {
+        setDlgEditarEspacio(false)
+        toast.current.show({ severity: 'success', summary: 'Espacio actualizado', detail: 'Se ha actualizado el espacio con éxito', life: 3000 });
+      })
+    }
   }
 
   const nombrarEstacion = (e) => {
@@ -187,17 +262,16 @@ const CrudPLinea = () => {
     return (
       <div>
         <Button
-        icon="pi pi-plus"
-        onClick={() => {iniciarAgregaEspacio(rowData)}}
-        tooltip='Agregar espacio' />
+          icon="pi pi-plus"
+          onClick={() => { iniciarAgregaEspacio(rowData) }}
+          tooltip='Agregar espacio' />
       </div>
     )
   }
 
   const colocarDimension = (e) => {
     setDimension(e.target.value)
-    setAgregaEspacioValues({...agregaEspacioValues, dimensiones: e.target.value})
-    console.log(agregaEspacioValues.dimensiones.size)
+    setAgregaEspacioValues({ ...agregaEspacioValues, dimensiones: e.target.value })
   }
 
   return (
@@ -248,43 +322,43 @@ const CrudPLinea = () => {
         footer={footerAgregaEspacio}
       >
         <div className='grid pt-4'>
-        <div className='pt-4 col-6'>
-          <FloatLabel>
-            <InputText
-            id='nombreEspacio'
-            onChange={(e) => {setAgregaEspacioValues({agregaEspacioValues, nombre: e.target.value})}}
-            />
-            <label htmlFor="nombreEspacio">Nombre espacio</label>
-            </FloatLabel>
-            </div>
-            <div className='pt-4 col-6'>
-            <Dropdown 
-            value={dimension} 
-            onChange={(e) => {colocarDimension(e)}} 
-            options={dimensionesOptions} 
-            optionLabel="size" 
-            placeholder="Selecciona un tamaño" 
-            className="w-full md:w-15rem" />
-            </div>
-            <div className='pt-4 col-6'>
+          <div className='pt-4 col-6'>
             <FloatLabel>
-            <InputText
-            id='precio'
-            onChange={(e) => {setAgregaEspacioValues({...agregaEspacioValues, precio: e.target.value})}}
-            keyfilter='int'
-            />
-            <label htmlFor="precio">Precio</label>
+              <InputText
+                id='nombreEspacio'
+                onChange={(e) => { setAgregaEspacioValues({ ...agregaEspacioValues, nombre: e.target.value }) }}
+              />
+              <label htmlFor="nombreEspacio">Nombre espacio</label>
             </FloatLabel>
-            </div>
-            <div className='pt-4 col-6'>
+          </div>
+          <div className='pt-4 col-6'>
+            <Dropdown
+              value={dimension}
+              onChange={(e) => { colocarDimension(e) }}
+              options={dimensionesOptions}
+              optionLabel="size"
+              placeholder="Selecciona un tamaño"
+              className="w-full md:w-15rem" />
+          </div>
+          <div className='pt-4 col-6'>
             <FloatLabel>
-            <InputText
-            id='estado'
-            onChange={(e) => {setAgregaEspacioValues({...agregaEspacioValues, estado: e.target.value})}}
-            />
-            <label htmlFor="estado">Estado</label>
+              <InputText
+                id='precio'
+                onChange={(e) => { setAgregaEspacioValues({ ...agregaEspacioValues, precio: e.target.value }) }}
+                keyfilter='int'
+              />
+              <label htmlFor="precio">Precio</label>
             </FloatLabel>
-            </div>
+          </div>
+          <div className='pt-4 col-6'>
+            <FloatLabel>
+              <InputText
+                id='estado'
+                onChange={(e) => { setAgregaEspacioValues({ ...agregaEspacioValues, estado: e.target.value }) }}
+              />
+              <label htmlFor="estado">Estado</label>
+            </FloatLabel>
+          </div>
         </div>
       </Dialog>
       <Toast ref={toast} />
@@ -304,6 +378,69 @@ const CrudPLinea = () => {
             />
             <label htmlFor='agregaEstacion'>Nombre estación</label>
           </FloatLabel>
+        </div>
+      </Dialog>
+      <Dialog
+        visible={dlgEditarEspacio}
+        modal
+        header="Editar espacio"
+        style={{ width: '50rem' }}
+        footer={(footerActualizarEspacio)}
+        onHide={() => { setDlgEditarEspacio(false) }}
+      >
+        <div className='grid pt-4'>
+          <div className='pt-4 col-6'>
+            <FloatLabel>
+              <InputText
+                id='nombreEspacioEdit'
+                onChange={(e) => { setAgregaEspacioValues({ ...agregaEspacioValues, nombre: e.target.value }) }}
+                value={agregaEspacioValues.nombre}
+              />
+              <label htmlFor="nombreEspacioEdit">Nombre espacio</label>
+            </FloatLabel>
+          </div>
+          <div className='pt-4 col-6'>
+            <Dropdown
+              value={dimension}
+              onChange={(e) => { colocarDimension(e) }}
+              options={dimensionesOptions}
+              optionLabel="size"
+              placeholder="Selecciona un tamaño"
+              className="w-full md:w-15rem" />
+          </div>
+          <div className='pt-4 col-6'>
+            <FloatLabel>
+              <InputText
+                id='precioEdit'
+                keyfilter='int'
+                onChange={(e) => { setAgregaEspacioValues({ ...agregaEspacioValues, precio: e.target.value }) }}
+              />
+              <label htmlFor="precioEdit">Precio</label>
+            </FloatLabel>
+          </div>
+          <div className='pt-4 col-6'>
+            <FloatLabel>
+              <InputText
+                id='estadoEdit'
+                onChange={(e) => { setAgregaEspacioValues({ ...agregaEspacioValues, estado: e.target.value }) }}
+              />
+              <label htmlFor="estadoEdit">Estado</label>
+            </FloatLabel>
+          </div>
+        </div>
+      </Dialog>
+      <Dialog
+        visible={dlgEliminarEspacio}
+        modal
+        header="Aviso"
+        style={{ width: '35rem' }}
+        footer={(footerEliminarEspacio)}
+        onHide={() => { setDlgEliminarEspacio(false) }}
+      >
+        <div className='card'>
+          <div className='justify-content-center align-items-center'>
+            <h3><p><b>Seguro que deseas eliminar el espacio?</b></p></h3>
+          </div>
         </div>
       </Dialog>
     </div>

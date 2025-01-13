@@ -26,4 +26,16 @@ export default class CrudPLineaService {
         return axios.post(baseUrl, nuevoEspacio, {headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`, 'Content-type': 'application/json'}})
         .then(response => response.data);
     }
+
+    actualizarEspacio(idEspacio, espacio){
+        let baseUrl = 'http://localhost:8080/mexibus/espacio/actualizarEspacio/' + idEspacio;
+        return axios.put(baseUrl, espacio, {headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`, 'Content-type': 'application/json'}})
+        .then(response => response.data);
+    }
+
+    eliminarEspacio(idEspacio){
+        let baseUrl = 'http://localhost:8080/mexibus/espacio/eliminarEspacio/' + idEspacio;
+        return axios.delete(baseUrl, {headers: {'Authorization': `Bearer ${localStorage.getItem('token')}`}})
+        .then(response => response.data);
+    }
 }
